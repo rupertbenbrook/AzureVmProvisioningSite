@@ -84,7 +84,7 @@
       }
     },
     {
-      "apiVersion": "2015-08-01",
+      "apiVersion": "2014-06-01",
       "name": "[parameters('siteName')]",
       "type": "Microsoft.Web/sites",
       "location": "[parameters('siteLocation')]",
@@ -100,7 +100,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2014-06-01",
           "type": "config",
           "name": "web",
           "dependsOn": [
@@ -144,7 +144,7 @@
           }
         },
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2014-06-01",
           "name": "web",
           "type": "sourcecontrols",
           "dependsOn": [
