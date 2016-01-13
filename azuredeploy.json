@@ -30,7 +30,6 @@
       ],
       "defaultValue": "0"
     },
-
     "clientId": {
       "type": "string",
       "defaultValue": "the client ID configured in your AAD tenant for this application"
@@ -153,7 +152,7 @@
             "[concat('Microsoft.Web/Sites/', parameters('siteName'), '/config/web')]"
           ],
           "properties": {
-            "RepoUrl": "[parameters('repoUrl')]",
+            "repoUrl": "[parameters('repoUrl')]",
             "branch": "[parameters('branch')]",
             "IsManualIntegration": true
           }
