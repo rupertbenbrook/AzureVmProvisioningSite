@@ -1,0 +1,165 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "siteName": {
+      "type": "string"
+    },
+    "hostingPlanName": {
+      "type": "string"
+    },
+    "siteLocation": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Shared",
+        "Basic",
+        "Standard"
+      ],
+      "defaultValue": "Free"
+    },
+    "workerSize": {
+      "type": "string",
+      "allowedValues": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "0"
+    },
+
+    "clientId": {
+      "type": "string",
+      "defaultValue": "the client ID configured in your AAD tenant for this application"
+    },
+    "authorityUriBase": {
+      "type": "string",
+      "defaultValue": "the base uri for AAD authority including your AAD tenant ID"
+    },
+    "postLogoutRedirectUri": {
+      "type": "string",
+      "defaultValue": "the Uri to redirect to at logout"
+    },
+    "domainHint": {
+      "type": "string",
+      "defaultValue": "the AAD tenant domain hint"
+    },
+    "clientSecret": {
+      "type": "string",
+      "defaultValue": "the client secret registered in AAD for this application"
+    },
+    "tokenResource": {
+      "type": "string",
+      "defaultValue": "the base Uri for Azure subscription management"
+    },
+    "subscriptionId": {
+      "type": "string",
+      "defaultValue": "the subscription ID containing the VMs to manage"
+    },
+    "deploymentResourceGroup": {
+      "type": "string",
+      "defaultValue": "the name of the resource group containing the managed VMs"
+    },
+    "repoUrl": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "release"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2014-06-01",
+      "name": "[parameters('hostingPlanName')]",
+      "type": "Microsoft.Web/serverFarms",
+      "location": "[parameters('siteLocation')]",
+      "properties": {
+        "name": "[parameters('hostingPlanName')]",
+        "sku": "[parameters('sku')]",
+        "workerSize": "[parameters('workerSize')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "apiVersion": "2014-06-01",
+      "name": "[parameters('siteName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[parameters('siteLocation')]",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
+      ],
+      "tags": {
+        [ "concat('hidden-related", : "", "resourceGroup().id", "/providers/Microsoft.Web/serverfarms/", "parameters('hostingPlanName'))" ],
+        : "empty"
+      },
+      "properties": {
+        "name": "[parameters('siteName')]",
+        "serverFarm": "[parameters('hostingPlanName')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2014-06-01",
+          "type": "config",
+          "name": "web",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', parameters('siteName'))]"
+          ],
+          "properties": {
+            "appSettings": [
+              {
+                "name": "ClientId",
+                "value": "[parameters('clientId')]"
+              },
+              {
+                "name": "AuthorityUriBase",
+                "value": "[parameters('authorityUriBase')]"
+              },
+              {
+                "name": "PostLogoutRedirectUri",
+                "value": "[parameters('postLogoutRedirectUri')]"
+              },
+              {
+                "name": "DomainHint",
+                "value": "[parameters('domainHint')]"
+              },
+              {
+                "name": "ClientSecret",
+                "value": "[parameters('clientSecret')]"
+              },
+              {
+                "name": "TokenResource",
+                "value": "[parameters('tokenResource')]"
+              },
+              {
+                "name": "SubscriptionId",
+                "value": "[parameters('subscriptionId')]"
+              },
+              {
+                "name": "DeploymentResourceGroup",
+                "value": "[parameters('deploymentResourceGroup')]"
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2014-06-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+            "[concat('Microsoft.Web/Sites/', parameters('siteName'), '/config/web')]"
+          ],
+          "properties": {
+            "RepoUrl": "[parameters('repoUrl')]",
+            "branch": "[parameters('branch')]",
+            "IsManualIntegration": true
+          }
+        }
+      ]
+    }
+  ]
+}

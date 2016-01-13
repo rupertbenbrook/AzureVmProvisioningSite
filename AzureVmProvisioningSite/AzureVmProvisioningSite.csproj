@@ -302,7 +302,6 @@
     <None Include="Views\Home\DeleteVm.cshtml" />
     <None Include="Views\Home\StartVm.cshtml" />
     <None Include="Views\Home\StopVm.cshtml" />
-    <None Include=".config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
