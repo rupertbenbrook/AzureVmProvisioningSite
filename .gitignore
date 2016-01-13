@@ -211,5 +211,5 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
-# Exclude local developer web.config
-Web.Local.Config
+# Exclude app settings config file
+AppSettings.config
