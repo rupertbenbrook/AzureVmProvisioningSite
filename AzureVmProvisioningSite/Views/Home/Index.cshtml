@@ -1,0 +1,25 @@
+﻿@model IList<AzureVmProvisioningSite.Models.VmState>
+
+@{
+    ViewBag.Title = "Home";
+}
+
+<div class="row row-space-20">
+    <div class="col-md-4">
+        <h2>Virtual Machines</h2>
+        @using (Html.BeginForm("CreateVm", "Home"))
+        {
+            <fieldset class="control-group">
+                <div class="input-group">
+                    <input type="text" name="name" class="form-control" placeholder="Virtual machine name...">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </span>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>
+<div class="row row-space-20">
+    @Html.DisplayForModel()
+</div>

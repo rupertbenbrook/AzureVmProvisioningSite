@@ -1,0 +1,62 @@
+﻿@using System.Globalization
+@model AzureVmProvisioningSite.Models.VmState
+
+<div class="col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">@Html.DisplayFor(v => v.Name) <span class="badge badge-running pull-right">@Html.DisplayFor(v => v.State)</span></h3>
+        </div>
+        <div class="panel-body">
+            <div class="btn-toolbar" role="toolbar" aria-label="...">
+                <a href="@Url.Action("ConnectVm", new {Model.Name})" class="btn btn-default" aria-haspopup="true" aria-expanded="false" title="Connect">
+                    <span class="glyphicon glyphicon-log-in"></span>
+                </a>
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Power">
+                        <span class="glyphicon glyphicon-off"></span>&nbsp;<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>@Html.ActionLink("Start", "StartVm", new {Model.Name})</li>
+                        <li>@Html.ActionLink("Stop", "StopVm", new {Model.Name})</li>
+                        <li>@Html.ActionLink("Restart", "RestartVm", new {Model.Name})</li>
+                    </ul>
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Snapshots">
+                        <span class="glyphicon glyphicon-hdd"></span>&nbsp; <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="li-padding-10">
+                            @using (Html.BeginForm("SnapshotVm", "Home"))
+                            {
+                                <fieldset class="control-group">
+                                    <input type="hidden" name="name" value="@Model.Name" />
+                                    <div class="input-group">
+                                        <input type="text" name="snapshotName" class="form-control" placeholder="Snapshot name...">
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-primary">Take</button>
+                                        </span>
+                                    </div>
+                                </fieldset>
+                            }
+                        </li>
+                        @if (Model.Snapshots.Count > 0)
+                        {
+                            <li role="separator" class="divider"></li>
+                        }
+                        @for (var snapshotIndex = 0; snapshotIndex < Model.Snapshots.Count; snapshotIndex++)
+                        {
+                            <li>@Html.ActionLink(Model.Snapshots[snapshotIndex].Name + " - " + Model.Snapshots[snapshotIndex].Timestamp.ToString(CultureInfo.InvariantCulture),
+                                    "RestoreVmSnapshot", new {Model.Name, snapshotIndex})</li>
+                        }
+                    </ul>
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                    <a href="@Url.Action("DeleteVm", new {Model.Name})" class="btn btn-default" aria-haspopup="true" aria-expanded="false" title="Delete">
+                        <span class="glyphicon glyphicon-remove-sign"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
