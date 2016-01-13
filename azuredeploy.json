@@ -93,8 +93,7 @@
         "[concat('Microsoft.Web/serverFarms/', parameters('hostingPlanName'))]"
       ],
       "tags": {
-        [ "concat('hidden-related", : "", "resourceGroup().id", "/providers/Microsoft.Web/serverfarms/", "parameters('hostingPlanName'))" ],
-        : "empty"
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
       },
       "properties": {
         "name": "[parameters('siteName')]",
