@@ -3,23 +3,42 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "siteName": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Web App to deploy."
+      }
     },
     "appServicePlanName": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The name of the App Service Plan to deploy the Web App into, or to create if it does not already exist."
+      }
     },
     "siteLocation": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "The region location to use, if creating an App Service Plan"
+      }
     },
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Free",
-        "Shared",
-        "Basic",
-        "Standard"
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3"
       ],
-      "defaultValue": "Free"
+      "defaultValue": "F1",
+      "metadata": {
+        "description": "The SKU of the App Service Plan to use, if creating an App Service Plan."
+      }
     },
     "workerSize": {
       "type": "string",
@@ -28,128 +47,143 @@
         "1",
         "2"
       ],
-      "defaultValue": "0"
+      "defaultValue": "0",
+      "metadata": {
+        "description": "The VM size of the workers to use in the App Service Plan, if creating an App Service Plan."
+      }
     },
     "clientId": {
       "type": "string",
-      "defaultValue": "the client ID configured in your AAD tenant for this application"
+      "metadata": {
+        "description": "The client ID configured in your AAD tenant for this application."
+      }
     },
     "authorityUriBase": {
       "type": "string",
-      "defaultValue": "the base uri for AAD authority including your AAD tenant ID"
+      "defaultValue": "https://login.windows.net/<tenantID>",
+      "metadata": {
+        "description": "The base uri for your AAD authority including your AAD tenant ID, typically https://login.windows.net/<tenantID>."
+      }
     },
     "postLogoutRedirectUri": {
       "type": "string",
-      "defaultValue": "the Uri to redirect to at logout"
+      "defaultValue": "https://azure.microsoft.com/",
+      "metadata": {
+        "description": "The Uri to redirect to when logging out."
+      }
     },
     "domainHint": {
       "type": "string",
-      "defaultValue": "the AAD tenant domain hint"
+      "metadata": {
+        "description": "The DNS domain hint for the AAD tenant domain to use."
+      }
     },
     "clientSecret": {
       "type": "string",
-      "defaultValue": "the client secret registered in AAD for this application"
+      "metadata": {
+        "description": "The client secret registered in AAD for this application to access Azure Service Management."
+      }
     },
     "tokenResource": {
       "type": "string",
-      "defaultValue": "the base Uri for Azure subscription management"
+      "defaultValue": "https://management.core.windows.net/",
+      "metadata": {
+        "description": "The base Uri for Azure subscription management, typically https://management.core.windows.net/."
+      }
     },
     "subscriptionId": {
       "type": "string",
-      "defaultValue": "the subscription ID containing the VMs to manage"
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "The subscription ID containing the VMs to manage."
+      }
     },
     "deploymentResourceGroup": {
       "type": "string",
-      "defaultValue": "the name of the resource group containing the managed VMs"
+      "metadata": {
+        "description": "The name of the resource group containing the managed VMs."
+      }
     },
     "repoUrl": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "https://github.com/rupertbenbrook/AzureVmProvisioningSite",
+      "metadata": {
+        "description": "The GitHub repository URL to deploy the site from."
+      }
     },
     "branch": {
       "type": "string",
-      "defaultValue": "release"
+      "defaultValue": "release",
+      "metadata": {
+        "description": "The GitHub repository branch to deploy the site from."
+      }
     }
   },
   "resources": [
     {
-      "apiVersion": "2014-06-01",
+      "apiVersion": "2015-08-01",
       "name": "[parameters('appServicePlanName')]",
       "type": "Microsoft.Web/serverfarms",
       "location": "[parameters('siteLocation')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
       "properties": {
         "name": "[parameters('appServicePlanName')]",
-        "sku": "[parameters('sku')]",
         "workerSize": "[parameters('workerSize')]",
         "numberOfWorkers": 1
       }
     },
     {
-      "apiVersion": "2014-06-01",
+      "apiVersion": "2015-08-01",
       "name": "[parameters('siteName')]",
       "type": "Microsoft.Web/sites",
       "location": "[parameters('siteLocation')]",
       "dependsOn": [
-        "[concat('Microsoft.Web/serverFarms/', parameters('appServicePlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       ],
-      "tags": {
-        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]": "empty"
-      },
       "properties": {
         "name": "[parameters('siteName')]",
-        "serverFarm": "[parameters('appServicePlanName')]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       },
       "resources": [
         {
-          "apiVersion": "2014-06-01",
-          "type": "config",
+          "apiVersion": "2015-08-01",
           "name": "web",
+          "type": "config",
           "dependsOn": [
-            "[concat('Microsoft.Web/Sites/', parameters('siteName'))]"
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
           "properties": {
-            "appSettings": [
-              {
-                "name": "ClientId",
-                "value": "[parameters('clientId')]"
-              },
-              {
-                "name": "AuthorityUriBase",
-                "value": "[parameters('authorityUriBase')]"
-              },
-              {
-                "name": "PostLogoutRedirectUri",
-                "value": "[parameters('postLogoutRedirectUri')]"
-              },
-              {
-                "name": "DomainHint",
-                "value": "[parameters('domainHint')]"
-              },
-              {
-                "name": "ClientSecret",
-                "value": "[parameters('clientSecret')]"
-              },
-              {
-                "name": "TokenResource",
-                "value": "[parameters('tokenResource')]"
-              },
-              {
-                "name": "SubscriptionId",
-                "value": "[parameters('subscriptionId')]"
-              },
-              {
-                "name": "DeploymentResourceGroup",
-                "value": "[parameters('deploymentResourceGroup')]"
-              }
-            ]
+            "netFrameworkVersion": "v4.0",
+            "phpVersion": "",
+            "defaultDocuments": [ ]
           }
         },
         {
-          "apiVersion": "2014-06-01",
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+          ],
+          "properties": {
+            "ClientId": "[parameters('clientId')]",
+            "AuthorityUriBase": "[parameters('authorityUriBase')]",
+            "PostLogoutRedirectUri": "[parameters('postLogoutRedirectUri')]",
+            "DomainHint": "[parameters('domainHint')]",
+            "ClientSecret": "[parameters('clientSecret')]",
+            "TokenResource": "[parameters('tokenResource')]",
+            "SubscriptionId": "[parameters('subscriptionId')]",
+            "DeploymentResourceGroup": "[parameters('deploymentResourceGroup')]"
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
           "name": "web",
           "type": "sourcecontrols",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
-            "[concat('Microsoft.Web/Sites/', parameters('siteName'), '/config/web')]"
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
           "properties": {
             "repoUrl": "[parameters('repoUrl')]",

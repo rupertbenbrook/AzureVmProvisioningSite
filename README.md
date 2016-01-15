@@ -1,7 +1,7 @@
 # AzureVmProvisioningSite
 A website that fronts the Azure Resource Manager API to provision and manage VMs and snapshots.
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Frupertbenbrook%2FAzureVmProvisioningSite%2Frelease%2Fazuredeploy.json)
 
 ## Deployment and Configuration
 *TODO*
