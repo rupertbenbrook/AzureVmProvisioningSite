@@ -4,7 +4,26 @@ A website that fronts the Azure Resource Manager API to provision and manage VMs
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Frupertbenbrook%2FAzureVmProvisioningSite%2Frelease%2Fazuredeploy.json)
 
 ## Deployment and Configuration
-*TODO*
+
+### Azure Active Directory Configuration
+This website relies on Azure Active Directory (AAD) both for authenticating users to the site and for
+authenticating with the Azure Resource Management (ARM) APIs to manage virtual machines. This requires an
+application to be registered in AAD prior to the deployment of the website to Azure so that the appropriate
+application configuration can be included in the website deployment parameters. There are three steps to this
+registration:
+
+* Creation of an AAD application
+* Delegation to ARM APIs
+* Creation of an application key
+
+[Integrating Applications with Azure Active Directory](https://azure.microsoft.com/en-us/documentation/articles/active-directory-integrating-applications/)
+
+### Azure Resource Manager Configuration
+* Create a Resource Group to contain the virtual machines under management
+* Apply permissions to the Resource Group to enable the website to 
+
+### Website Deployment
+
 
 > Copyright 2016 Rupert Benbrook
 >

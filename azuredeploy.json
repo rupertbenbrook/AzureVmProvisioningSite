@@ -75,7 +75,7 @@
     "domainHint": {
       "type": "string",
       "metadata": {
-        "description": "The DNS domain hint for the AAD tenant domain to use."
+        "description": "The DNS domain hint for the AAD tenant domain to use. typically <something>.onmicrosoft.com."
       }
     },
     "clientSecret": {
@@ -93,7 +93,6 @@
     },
     "subscriptionId": {
       "type": "string",
-      "defaultValue": "[subscription().subscriptionId]",
       "metadata": {
         "description": "The subscription ID containing the VMs to manage."
       }
