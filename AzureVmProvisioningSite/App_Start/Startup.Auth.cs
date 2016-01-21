@@ -20,6 +20,7 @@ namespace AzureVmProvisioningSite
                 {
                     ClientId = Config.ClientId,
                     Authority = Config.AuthorityUriBase,
+                    RedirectUri = Config.RedirectUri,
                     PostLogoutRedirectUri = Config.PostLogoutRedirectUri,
                     Notifications = new OpenIdConnectAuthenticationNotifications
                     {

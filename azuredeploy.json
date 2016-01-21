@@ -169,6 +169,7 @@
           "properties": {
             "ClientId": "[parameters('clientId')]",
             "AuthorityUriBase": "[parameters('authorityUriBase')]",
+            "RedirectUri": "[concat('https://', toLower(parameters('siteName')), '.azurewebsites.net')]",
             "PostLogoutRedirectUri": "[parameters('postLogoutRedirectUri')]",
             "DomainHint": "[parameters('domainHint')]",
             "ClientSecret": "[parameters('clientSecret')]",

@@ -13,14 +13,18 @@ application configuration can be included in the website deployment parameters. 
 registration:
 
 * Creation of an AAD application
-* Delegation to ARM APIs
 * Creation of an application key
+* Delegation to ARM APIs
+
+Things to capture at this stage for configuration: Client ID, Client Secret, Authority URI Base, Domain Hint
 
 [Integrating Applications with Azure Active Directory](https://azure.microsoft.com/en-us/documentation/articles/active-directory-integrating-applications/)
 
 ### Azure Resource Manager Configuration
 * Create a Resource Group to contain the virtual machines under management
 * Apply permissions to the Resource Group to enable the website to manage virtual machines
+
+Things to capture at this stage for configuration: Subscription ID, Deployment Resource Group
 
 ### Website Deployment
 
